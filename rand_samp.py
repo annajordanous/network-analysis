@@ -13,6 +13,7 @@ import shutil
 import os.path
 import add_data as ad
 import all_data_one_entity as adoe
+from all_data_one_entity import collect_user
 
 
 db_dirpath = 'rand_samp'
@@ -24,6 +25,11 @@ batches_before_backup = 100
 collect_funcs = {'users':adoe.collect_user,
                  'tracks':adoe.collect_track,
                  'comments':adoe.collect_comment}
+
+collect_scots_data_funcs = {'users':adoe.collect_scots_user, 
+                 'tracks':adoe.collect_track,
+                 'comments':adoe.collect_comment}
+
 
 maxnums = {'users':182000000,
            'tracks':230000000,
@@ -56,7 +62,7 @@ def collect_batch(curs,batch_size,maxnum,collect_func):
     return collected, non_ids
 
 
-def collect(sample_size=1,db_path=None,to_sample='users'):
+def collect(sample_size=1,db_path=None,to_sample='users',scots_data = False):
     
     start_time=time_stamp()
 
@@ -85,7 +91,12 @@ def collect(sample_size=1,db_path=None,to_sample='users'):
         start=time.time()
         uncollected = sample_size - collected
         batch_size = (uncollected if uncollected <= max_batch else max_batch)
-        collection=collect_batch(curs,batch_size,
+        if scots_data:
+            collection=collect_batch(curs,batch_size,
+                                 maxnums[to_sample],
+                                 collect_scots_data_funcs[to_sample])
+        else: 
+            collection=collect_batch(curs,batch_size,
                                  maxnums[to_sample],
                                  collect_funcs[to_sample])
         conn.commit()
@@ -110,13 +121,13 @@ def collect(sample_size=1,db_path=None,to_sample='users'):
     return collected, non_ids, start_time, time_stamp()
 
 
-def seek_limit(resource_func,start_at,stop_at=0):
+def seek_limit(curs, resource_func,start_at,stop_at=0):
     '''resource_func should be adoe.user_data, adoe.track_data, or
     adoe.comment_data'''
     
     current_num = start_at
     while current_num > stop_at:
-        a=resource_func(current_num)
+        a=resource_func(curs, current_num) 
         if a:
             print 'A very palpable hit!'
             return current_num
@@ -124,3 +135,21 @@ def seek_limit(resource_func,start_at,stop_at=0):
             current_num -= random.randint(0,100)
 
     return None
+
+#===============================================================================
+# def main():
+#     db_name='{}_rand_samp_seek_{}'#.format(to_sample,start_time)
+#     db_path=os.path.join(db_dirpath,db_name+'.sqlite')
+#     conn=sqlite3.connect(db_path)
+#     curs=conn.cursor()
+#     create_tables(curs)    
+#     seeking = "users"
+#     print("Seeking "+seeking)
+#     mns = maxnums[seeking]
+#     mns += int(mns*0.1)
+#     current_num = seek_limit(curs, collect_funcs[seeking], mns)
+#     print(str(current_num))
+#     
+#===============================================================================
+if __name__ == '__main__':
+    collect(sample_size=10, scots_data=True)

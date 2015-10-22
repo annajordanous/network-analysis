@@ -172,6 +172,22 @@ def collect_user(curs,user):
     return True
 
 
+def collect_scots_user(curs,user):
+    try:
+        curs.execute('INSERT INTO ids_tried (id) VALUES(?)',(user,))
+    except sqlite3.IntegrityError as ie:
+        return False
+
+    ud=user_data(user)
+    if not ud or not is_scottish(ud): return False
+
+    curs.execute('INSERT INTO sample (id) VALUES(?)',(user,))
+    insert_into_table(curs,'users',ud)
+    related_data_one_user(curs,user)
+
+    return True
+
+
 def collect_track(curs,track):
     try:
         curs.execute('INSERT INTO track_ids_tried (id) VALUES(?)',(track,))
@@ -208,3 +224,11 @@ def collect_comment(curs,comment):
     if tu: insert_into_table(curs,'users',tu)
 
     return True
+
+
+def is_scottish(ud):
+#city country
+    print(str(ud["id"])+" city="+str(ud["city"])+" country= "+str(ud["country"]))
+    return True
+
+

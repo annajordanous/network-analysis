@@ -235,7 +235,8 @@ def is_scottish(ud):
 #city country
     try:
         print(str(ud["id"])+" city="+str(ud["city"])+" country= "+str(ud["country"]))
-        if ud["city"] in place_list:
+        city = ud["city"].lower().strip()  # will fail and cause exception if None - this is ok
+        if city in place_list:
             # TODO message for info - remove 
             print('USER FOUND LOCATED IN PLACE WE ARE INTERESTED IN: '+str(ud["id"])+" city="+str(ud["city"])+" country= "+str(ud["country"]))
             return True

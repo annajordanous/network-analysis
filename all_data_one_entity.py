@@ -15,8 +15,10 @@ import sqlite3
 import collections
 import time
 import outward_waves
+import data_manip_functions
 
 time_delay = 2
+
 
 def user_dicts(resourcelist):
     return {u.obj['id']:u.obj for u in resourcelist}
@@ -177,7 +179,10 @@ def collect_scots_user(curs,user):
         curs.execute('INSERT INTO ids_tried (id) VALUES(?)',(user,))
     except sqlite3.IntegrityError as ie:
         return False
-
+    if 'place_list' not in globals():
+        global place_list
+        place_list = data_manip_functions.read_in_data('scotland.txt')
+        
     ud=user_data(user)
     if not ud or not is_scottish(ud): return False
 
@@ -228,7 +233,17 @@ def collect_comment(curs,comment):
 
 def is_scottish(ud):
 #city country
-    print(str(ud["id"])+" city="+str(ud["city"])+" country= "+str(ud["country"]))
-    return True
-
+    try:
+        print(str(ud["id"])+" city="+str(ud["city"])+" country= "+str(ud["country"]))
+        if ud["city"] in place_list:
+            # TODO message for info - remove 
+            print('USER FOUND LOCATED IN PLACE WE ARE INTERESTED IN: '+str(ud["id"])+" city="+str(ud["city"])+" country= "+str(ud["country"]))
+            return True
+        else: 
+            return False
+    except:  
+        #city or country contains non ascii characters - TODO fix if we ever want to collect users from cities/countries with non-ascii characters in the names
+        
+        return False
+    
 

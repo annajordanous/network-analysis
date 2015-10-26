@@ -35,9 +35,9 @@ def get_data(req):
         while True:
             try:
                 if req[-1].isdigit():
-                    return gsd.client.get(req)
+                    return gsd.client_get(req)
                 else:
-                    batch=user_dicts(gsd.client.get(req,
+                    batch=user_dicts(gsd.client_get(req,
                                                     order='created_at', 
                                                     limit=mouthful,
                                                     offset=start_at))
@@ -53,7 +53,7 @@ def get_data(req):
                     mouthful = mouthful / 2
                     if mouthful < 1: mouthful = 1
 
-                warning = ('ERROR in client.get() - problem connecting to '
+                warning = ('ERROR in client_get() - problem connecting to '
                            'SoundCloud API, error '+str(e)+' for '
                            'request '+req+'. Trying again... '
                            'attempt '+str(count))

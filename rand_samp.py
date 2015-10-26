@@ -152,4 +152,4 @@ def seek_limit(curs, resource_func,start_at,stop_at=0):
 #     
 #===============================================================================
 if __name__ == '__main__':
-    collect(sample_size=100, scots_data=True)
+    collect(sample_size=500, scots_data=True)

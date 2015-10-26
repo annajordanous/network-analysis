@@ -33,7 +33,7 @@ except Exception as e:
     
 client = soundcloud.Client(client_id=client_settings.get_client_id())
 request_count = 0
-time_delay = 2 # time delay in seconds between failed attempts
+time_delay = 4 # time delay in seconds between failed attempts
 
 last_backup_time = int(time.time()) # initial value
 time_between_backups_secs = 86400 # TODO RESET after testing 86400 seconds = 24 hours, 3600 = 1 hour
@@ -275,7 +275,7 @@ def get_random_EM_user():
 #    return temp_user 
 
 
-def client_get(request, max_attempts=100):
+def client_get(request, max_attempts=5):
     global client
     global request_count
     global time_delay

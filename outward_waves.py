@@ -342,3 +342,17 @@ def ego_nets(seeds=case_studies,waves=2):
     for seed in seeds:
         print 'Current seed: {}.'.format(seed[0])
         collect('ego_net_of_{}'.format(seed[0]),seed[1],waves=waves)
+        
+# 208934,"Calvinharris",
+# """1122672"",""The Nibelheim Incident""# I'm into soundcloud being a community of sorts so if you comment on my tracks I will check out your tracks at some point, usually soon after.&#13;
+# "3913715","Middleschoolfrown","John","Kevin"
+# """4026248"",""Dave Cruickshank""
+# "4572709","JASE GALLACHER","Jase","Gallacher"        
+
+def collect_data_for_SMR():
+    collect('scottish_a_jaseGallacher',4572709, 3)
+    collect('scottish_b_daveCruickshank',4026248, 3)
+    collect('scottish_c_Middleschoolfrown',3913715, 3)
+    collect('scottish_d_NibelheimIncident',1122672, 3)
+    collect('scottish_e_calvinharris',208934, 3)
+    
